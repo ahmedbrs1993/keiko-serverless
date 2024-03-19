@@ -1,20 +1,19 @@
 import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
+import { useState, useEffect } from 'react';
+import { ApeNFT, BackgroundPaper } from './Home.style';
+import { useAudio } from 'hooks';
+import { useAsync } from 'react-use';
+import { getNftPrice } from '../../../../backend/functions/getNftPrice/config';
 
-import { useState } from 'react';
+import coin from '../../assets/coin.mp3';
+import kumo from 'assets/kumo.svg';
 import nft1 from 'assets/nft1.png';
 import nft2 from 'assets/nft2.png';
 import nft3 from 'assets/nft3.png';
 import nft4 from 'assets/nft4.png';
 import nft5 from 'assets/nft5.png';
 import axios from 'axios';
-
-import { ApeNFT, BackgroundPaper } from './Home.style';
-import { useAudio } from 'hooks';
-
-import coin from '../../assets/coin.mp3';
-import kumo from 'assets/kumo.svg';
-import { useAsync } from 'react-use';
 
 const client = axios.create({
   baseURL: process.env.VITE_API_URL,
@@ -36,13 +35,9 @@ interface ApeNFTData {
 
 const ApeNFTImgs = [nft1, nft2, nft3, nft4, nft5];
 
-const randomIntFromInterval = (min: number, max: number) =>
-  Math.floor(Math.random() * (max - min + 1) + min);
-
-const getNFTPrice = () => randomIntFromInterval(0, 100000);
-
 const Home = (): JSX.Element => {
   const [score, setScore] = useState(0);
+  const [userId, setUserId] = useState<string>('');
 
   const [apeNFTs, setApeNFTs] = useState<ApeNFTProps[]>([]);
 
@@ -56,27 +51,63 @@ const Home = (): JSX.Element => {
     );
   });
 
-  const buyApeNFT = async () => {
-    const { data } = await client.post<ApeNFTData>(`/nfts`);
+  useEffect(() => {
+    // Generate user ID
+    const id = crypto.randomUUID();
+    setUserId(id);
+    createUser(id);
+  }, []);
 
-    setApeNFTs(prevApeNFTs =>
-      prevApeNFTs.concat({
-        ...data,
-        src: ApeNFTImgs[(data && data.imageIndex) || 0],
-      }),
-    );
-    setScore(prevScore => prevScore - getNFTPrice());
+  const createUser = async (userId: string) => {
+    try {
+      await client.put(`/user/${userId}/${0}`);
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
+  };
+
+  const updateScore = async (userId: string, newScore: number) => {
+    try {
+      await client.put(`/user/${userId}/${newScore}`);
+      setScore(newScore);
+    } catch (error) {
+      console.error('Error updating user score:', error);
+    }
+  };
+
+  const buyApeNFT = async () => {
+    try {
+      const nftPrice: number = getNftPrice;
+
+      const { data } = await client.post<ApeNFTData>('/nfts');
+      updateScore(userId, score - nftPrice); // Update user score
+      setApeNFTs(prevApeNFTs =>
+        prevApeNFTs.concat({
+          ...data,
+          src: ApeNFTImgs[(data && data.imageIndex) || 0],
+        }),
+      );
+      setScore(prevScore => prevScore - nftPrice);
+    } catch (error) {
+      console.error('Error creating NFT:', error);
+    }
   };
 
   const sellApeNFT = async (apeNFTId: string) => {
-    console.log('apeNFTId', apeNFTId);
-    console.log('client', client);
+    try {
+      const nftPrice = getNftPrice;
 
-    await client.delete(`/nfts/${apeNFTId}`);
-
-    setApeNFTs(prevApeNFTs => prevApeNFTs.filter(({ id }) => id !== apeNFTId));
-    setScore(prevScore => prevScore + getNFTPrice());
+      await client.delete(`/nfts/${apeNFTId}`);
+      updateScore(userId, score + nftPrice); // Update user score
+      setApeNFTs(prevApeNFTs =>
+        prevApeNFTs.filter(({ id }) => id !== apeNFTId),
+      );
+      setScore(prevScore => prevScore + nftPrice);
+    } catch (error) {
+      console.error('Error deleting NFT:', error);
+    }
   };
+
   const audio = useAudio(coin, { volume: 0.8, playbackRate: 1 });
 
   return (
