@@ -60,12 +60,18 @@ const Home = (): JSX.Element => {
     const { data } = await client.post<ApeNFTData>(`/nfts`);
 
     setApeNFTs(prevApeNFTs =>
-      prevApeNFTs.concat({ ...data, src: ApeNFTImgs[data.imageIndex] }),
+      prevApeNFTs.concat({
+        ...data,
+        src: ApeNFTImgs[(data && data.imageIndex) || 0],
+      }),
     );
     setScore(prevScore => prevScore - getNFTPrice());
   };
 
   const sellApeNFT = async (apeNFTId: string) => {
+    console.log('apeNFTId', apeNFTId);
+    console.log('client', client);
+
     await client.delete(`/nfts/${apeNFTId}`);
 
     setApeNFTs(prevApeNFTs => prevApeNFTs.filter(({ id }) => id !== apeNFTId));
