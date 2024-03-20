@@ -1,4 +1,4 @@
-import { PARTITION_KEY } from 'resources/dynamoDB';
+import { PARTITION_KEY } from '../../resources/dynamoDB';
 import { Entity } from 'dynamodb-toolbox';
 import { nftTable } from './nftTable';
 

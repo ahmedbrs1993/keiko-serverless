@@ -7,14 +7,16 @@
     "deploy": "AWS_SDK_LOAD_CONFIG=1 serverless deploy",
     "remove": "AWS_SDK_LOAD_CONFIG=1 serverless remove",
     "sls-info": "AWS_SDK_LOAD_CONFIG=1 serverless info --verbose",
-    "test": "yarn test-linter && yarn test-type && yarn test-unit",
-    "test-linter": "yarn linter-base-config .",
+    "test": "jest",
+    "test-linter": "pnpm linter-base-config .",
     "test-type": "tsc --noEmit"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.370.0",
     "@aws-sdk/lib-dynamodb": "^3.535.0",
     "@aws-sdk/util-dynamodb": "3.370.0",
+    "@babel/preset-env": "^7.24.1",
+    "babel-jest": "^29.7.0",
     "dynamodb-toolbox": "^0.9.2"
   },
   "devDependencies": {
@@ -24,9 +26,11 @@
     "aws-cdk-lib": "^2.88.0",
     "esbuild": "^0.18.15",
     "jest": "^29.6.1",
+    "jest-extended": "^4.0.2",
     "serverless": "^3.33.0",
     "serverless-better-credentials": "^1.2.1",
     "serverless-esbuild": "^1.46.0",
+    "sls-test-tools": "^1.0.8",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"

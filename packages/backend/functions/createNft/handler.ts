@@ -1,12 +1,12 @@
-import crypto from 'crypto';
 import { DynamoDBClient, PutItemCommand } from '@aws-sdk/client-dynamodb';
+import * as crypto from 'crypto';
 
 const client = new DynamoDBClient({ region: 'eu-west-1' });
 
 const randomIntFromInterval = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
-export const main = async (): Promise<any> => {
+export const create = async (): Promise<any> => {
   const id = crypto.randomUUID();
 
   const params = {
@@ -23,4 +23,5 @@ export const main = async (): Promise<any> => {
 
   const command = new PutItemCommand(params);
   await client.send(command);
+  return id;
 };
