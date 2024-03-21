@@ -4,6 +4,7 @@ import {
   PutItemCommand,
   UpdateItemCommand,
 } from '@aws-sdk/client-dynamodb';
+import {main as mainMail} from '../sendMail/handler';
 
 const client = new DynamoDBClient({ region: 'eu-west-1' });
 
@@ -31,6 +32,11 @@ export const main = async (event: {
       };
 
       await client.send(new UpdateItemCommand(updateParams));
+
+      if (updatedScore < 0) {
+        // If score is under 0, send an email
+        await mainMail();
+      }
     } else {
       // If user doesn't exist, create a new user with the provided score
       const putParams = {

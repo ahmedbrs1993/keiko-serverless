@@ -2,6 +2,8 @@ import { App, RemovalPolicy, Stack } from 'aws-cdk-lib';
 import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 
 import { PARTITION_KEY, SORT_KEY } from './dynamoDB';
+import { setupSES } from './ses';
+import type { Construct } from 'constructs';
 
 const app = new App();
 const stack = new Stack(app);
@@ -24,7 +26,7 @@ export const tableArn = stack.resolve(table.tableArn);
 export const tableName = stack.resolve(table.tableName);
 export const tableUser = stack.resolve(TUser.tableName);
 export const tableUserArn = stack.resolve(TUser.tableArn);
-
+setupSES(stack as unknown as Construct)
 /**
  * Do not keep 'Rules' nor 'Parameters' to avoid the following errors (without resorting to cdk bridge plugin):
  *   Error: Invalid configuration encountered

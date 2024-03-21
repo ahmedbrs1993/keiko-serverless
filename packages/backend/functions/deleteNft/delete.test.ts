@@ -1,13 +1,13 @@
 import 'sls-test-tools';
 import { main } from "./handler";
-import { get } from "../getNft/handler";
+import { main as mainGet } from "../getNft/handler";
 
   // Test suite for Delete NFT
   describe("Delete NFT", () => {
   
     it("should delete from Dynamo", async () => {
       // Get All results
-      let results = await get();
+      let results = await mainGet();
 
       // Get First Result
       let id:any = results[0].id;

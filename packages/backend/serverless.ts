@@ -26,8 +26,7 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
       NFT_TABLE_NAME: tableName,
-      USER_TABLE_NAME: tableUser,
-      CFN_STACK_NAME: 'keiko-serverless-dev'
+      USER_TABLE_NAME: tableUser
     },
     httpApi: {
       payload: '2.0',

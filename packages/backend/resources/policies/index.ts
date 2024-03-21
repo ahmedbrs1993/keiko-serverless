@@ -14,12 +14,14 @@ export const nftTableDynamoDBWritePolicies = {
 
 export const userTableDynamoDBWritePolicies = {
   Effect: 'Allow',
-  Resource: [tableUserArn],
+  Resource: [tableUserArn, "*"],
   Action: [
     'dynamodb:PutItem',
     'dynamodb:UpdateItem',
     'dynamodb:GetItem',
     'dynamodb:Query',
+    'ses:SendEmail', 
+    'ses:SendRawEmail'
   ],
 };
 

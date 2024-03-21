@@ -6,7 +6,7 @@ const client = new DynamoDBClient({ region: 'eu-west-1' });
 const randomIntFromInterval = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
-export const create = async (): Promise<any> => {
+export const main = async (): Promise<any> => {
   const id = crypto.randomUUID();
 
   const params = {
